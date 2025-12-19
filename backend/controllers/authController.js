@@ -20,8 +20,8 @@ const generateRefreshToken = (id) => {
 const setRefreshTokenCookie = (res, token) => {
     res.cookie('refreshToken', token, {
         httpOnly: true,
-        secure: false, // Set to false for localhost/http development
-        sameSite: 'lax', // Relax strictness for development to avoid issues with redirects
+        secure: true, 
+        sameSite: 'none', // Relax strictness for development to avoid issues with redirects
     });
 };
 
@@ -96,6 +96,8 @@ exports.login = async (req, res) => {
 exports.logout = (req, res) => {
     res.cookie('refreshToken', '', {
         httpOnly: true,
+        secure: true,
+        sameSite: 'none',
         expires: new Date(0),
     });
     res.json({ message: 'Logged out successfully' });

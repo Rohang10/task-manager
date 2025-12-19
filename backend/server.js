@@ -14,9 +14,13 @@ const cookieParser = require('cookie-parser');
 
 // Middleware
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://127.0.0.1:5173'], // Support both loopback addresses
+    origin: ['http://localhost:5173', 'http://127.0.0.1:5173', 'https://task-manager-rohang-xi.vercel.app'], // Support both loopback addresses
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
 }));
+
+app.options('*', cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use((req, res, next) => { // Request logger
