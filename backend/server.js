@@ -11,13 +11,28 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 const cookieParser = require('cookie-parser');
+const FRONTEND_ORIGIN = "https://task-manager-rohang-r.vercel.app";
+
 
 // Middleware
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://127.0.0.1:5173', 'https://task-manager-rohang-r.vercel.app'], // Support both loopback addresses
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true
+  origin: (origin, callback) => {
+    // Allow requests without origin (Postman, server-to-server)
+    if (!origin) return callback(null, true);
+
+    // ✅ Keep localhost origins exactly as requested
+    if (origin === "http://localhost:5173") return callback(null, true);
+    if (origin === "http://127.0.0.1:5173") return callback(null, true);
+
+    // ✅ Allow ALL Vercel deployments (preview + production)
+    if (origin.endsWith(".vercel.app")) return callback(null, true);
+
+    // ❌ Block everything else
+    return callback(new Error("CORS: Origin not allowed"));
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
 }));
 
 app.use(express.json());
